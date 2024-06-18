@@ -1,0 +1,706 @@
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
+<style>
+/* Styling for quiz-containeren */
+.quiz {
+  margin-top: 1em;										/* Tilføjer en margin øverst */
+  min-height: 50vh; 									/* Minimum højde på 50% af viewport-højden */
+  background: #fff; 									/* Hvid baggrundsfarve */
+  box-shadow: -2px 0px 21px -2px rgba(0, 0, 0, 0.4);	/* Tilføjer en skyggeeffekt */
+}
+/* Centrerer tekst horisontalt */
+.text-center {
+  text-align: center;									/* Centrerer teksten */
+}
+/* Styling for billeder inden i spørgsmål */
+.quiz .question img {
+  display: block;										/* Viser billedet som et blok-element */
+  margin: 0 auto;										/* Centrerer billedet horisontalt */
+  max-height: 30vh;
+}
+/* Styling for knapper */
+.quiz button {
+  margin-top: 2em;										/* Tilføjer en margin øverst */
+  user-select: none;									/* Forhindrer tekstvalg */
+  outline: 0!important;									/* Fjerner outline */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);			/* Tilføjer en subtil tekstskygge */
+  position: relative; 									/* Positionerer elementet relativt til dets normale position */
+}
+/* Styling for knapper med klassen 'btn' */
+.quiz .btn {
+  font-size: 1.6rem;									/* Skriftstørrelse */
+  height: 3.2em;										/* Højde på knappen */
+  transition: all 0.25s ease;							/* Glidende overgang for alle egenskaber */
+}
+/* Styling for primære og succes-knapper */
+.quiz .btn-primary,
+.quiz .btn-success {
+  opacity: 0.9;											/* Let gennemsigtig */
+  background: #F55711;									/* Baggrundsfarve */
+  border-radius: 0;										/* Ingen afrundede hjørner */
+  border: 0;											/* Ingen kant */
+  padding: 0.5em 1em;									/* Polstring inde i knappen */
+  text-align: center;									/* Centreret tekst */
+  color: #fff;											/* Hvid tekstfarve */
+  position: relative;									/* Positioneret relativt til sin normale position */
+}
+
+/* Tilføjer en kant-effekt til primære og succes-knapper */
+.quiz .btn-primary::before,
+.quiz .btn-success::before {
+  content: '';											/* Tomt indhold */
+  position: absolute;									/* Positioneret absolut inden i knappen */
+  left: 0;												/* Positioneret ved venstre kant */
+  top: 0;												/* Positioneret ved toppen */
+  bottom: 0;											/* Strækker sig til bunden */
+  width: 4px;											/* Bredde på kanten */
+  background: #03294A;									/* Baggrundsfarve på kanten */
+}
+
+/* Hover-effekt for primære knapper */
+.quiz .btn-primary:hover {
+  opacity: 1;											/* Fuldstændig uigennemsigtig */
+  background: #03294A;									/* Baggrundsfarve ved hover */
+  color: #fff;											/* Hvid tekstfarve */
+}
+
+/* Ændrer kantens farve ved hover */
+.quiz .btn-primary:hover::before,
+.quiz .btn-success:hover::before {
+  background: #43BCA2; 									/* Ny kantfarve ved hover */
+}
+/* Specifik styling for succes-knapper */
+.quiz .btn-success {
+  background: #F55711;									/* Baggrundsfarve */
+}
+/* Hover- og aktiv-tilstande for succes-knapper */
+.quiz .btn-success:hover,
+.quiz .btn-success:active {
+  background: #03294A;									/* Baggrundsfarve ved hover/aktiv */
+}
+
+/* Deaktiveret tilstand for primære knapper */
+.quiz .btn-primary:disabled,
+.quiz .btn-primary:disabled:hover {
+  background: #ccc;										/* Grå baggrund når deaktiveret */
+}
+/* Styling for indhold inden i quizzen */
+.quiz .content {
+  color: #222;											/* Tekstfarve */
+  padding: 0.25em 3em 2em 3em;							/* Polstring */
+  margin-bottom: 1em;									/* Margin i bunden */
+}
+/* Styling for startsektionen */									
+.quiz .start {
+  margin-top: 2em;										/* Margin øverst */
+}
+/* Styling for afsnit/paragraf inden i startsektionen */
+.quiz .start p {
+  font-size: 1em;										/* Skriftstørrelse */
+}
+/* Styling for aside-elementer */
+.quiz aside {
+  color: #777;											/* Tekstfarve */
+  font-size: 1.5rem;									/* Skriftstørrelse */
+  padding-top: 0.25em;									/* Polstring øverst */
+}
+/* Styling for spørgsmål */
+.quiz .question {
+  margin-top: 2em;										/* Margin øverst */
+  position: relative;									/* Positioneret relativt til sin normale position */
+}
+/* Tilføjer en skyggeeffekt til billeder inden i spørgsmål */
+.quiz .question img {
+  box-shadow: -2px 0px 21px -2px rgba(0, 0, 0, 0.4);	/* Skyggeeffekt */
+}
+/* Styling for afsnit/paragraf inden i spørgsmål og startsektionen */
+.quiz .question p,
+.quiz .start p {
+  font-size: 1.8rem;									/* Skriftstørrelse */
+  line-height: 1.5;										/* Linjehøjde */
+  margin: 1em 0;										/* Margin øverst og nederst */
+}
+/* Fjerner polstring i bunden af sidste afsnit/paragraf i startsektionen */
+.quiz .start p:last-of-type {
+  padding-bottom: 0;									/* Ingen polstring i bunden */
+}
+/* Minimum højde for spørgsmål indhold */
+.quiz .question-content {
+  min-height: 50px;										/* Minimum højde */
+}
+/* Margin for spørgsmål valgmuligheder */
+.quiz .question-options {
+  margin-left: 1.5rem;									/* Margin til venstre */
+}
+/* Styling for feedback beskeder */
+.quiz .feedback {
+  padding-bottom: 0.75em;								/* Polstring i bunden */
+  margin: -0.5em 1em 0 2em;								/* Margin */
+  animation: 0.75s roll-in ease;						/* Roll-in animation */
+}
+/* Styling for fremskridtsbjælken */
+.quiz .progress {
+  position: relative;									/* Positioneret relativt til sin normale position */
+  margin-bottom: 0;										/* Ingen margin i bunden */
+  background: #b5b5b5;									/* Baggrundsfarve */
+  border-radius: 0;										/* Ingen afrundede hjørner */
+  width: 100%;											/* Fuld bredde */
+}
+/* Styling for fremskridtsbjælkens fyld */
+.quiz .progress-bar {
+  background: #43BCA2;									/* Baggrundsfarve */
+  height: 100%;											/* Fuld højde */
+  transition: width 0.4s ease;							/* Glidende breddeovergang */
+}
+/* Styling for fremskridtsbjælkens tæller */
+.quiz .progress .counter {
+  position: absolute;									/* Positioneret absolut inden i fremskridtsbjælken */
+  right: 5px;											/* Positioneret til højre */
+  top: 0;												/* Positioneret øverst */
+  font-weight: normal;									/* Normal skriftvægt */
+  color: #fff;											/* Hvid tekstfarve */
+}
+/* Styling for "get my result" sektionen */
+.quiz .get-my-resultat {
+  font-size: 2.4rem;									/* Skriftstørrelse */
+  margin-bottom: 1em;									/* Margin i bunden */
+}
+/* Styling for ikoner inden i knapper */
+.quiz button .fa {
+  margin-right: 0.5em;									/* Margin til højre */
+}
+/* Styling for "start over" sektionen */
+.quiz .start-over {
+  margin-top: 20%;										/* Margin øverst */
+}
+/* Styling for resultat sektionen */
+.quiz .resultat {
+  padding: 3em;											/* Polstring */
+  margin-top: 2em;										/* Margin øverst */
+  color: #fff;											/* Hvid tekstfarve */
+  background: #43BCA2;									/* Baggrundsfarve */
+}
+/* Styling for overskrifter inden i resultat sektionen */
+.quiz .resultat h1 {
+  font-size: 2.8rem;									/* Skriftstørrelse */
+  text-shadow: 1px 2px 1px rgba(0, 0, 0, 0.1);			/* Tekstskygge */
+}
+/* Styling for underoverskrifter inden i resultat sektionen */
+.quiz .resultat h2 {
+  font-size: 2.4rem;									/* Skriftstørrelse */
+  text-shadow: 1px 2px 1px rgba(0, 0, 0, 0.1);			/* Tekstskygge */
+}
+/* Dæmpet effekt */
+.quiz .dim {
+  opacity: 0.5;											/* 50% uigennemsigtighed */
+}
+/* Styling for dæmpede radioknapper */
+.quiz .dim [type="radio"]:checked + label,
+.quiz .dim [type="radio"]:not(:checked) + label {
+  cursor: initial;	/* Standard cursor */
+/* Anvender styling til labels for både valgte og ikke-valgte radio knapper inden for .dim klassen i .quiz konteksten.*/
+  
+}
+
+/* custom radio controls */
+.quiz .option {
+  margin-bottom: 0.75em;
+  transition: all 0.25s ease;
+}
+.quiz [type="radio"]:checked,
+.quiz [type="radio"]:not(:checked) {
+  position: absolute;
+  left: -9999px;
+}
+.quiz [type="radio"]:checked + label,
+.quiz [type="radio"]:not(:checked) + label {
+  position: relative;
+  font-weight: normal;
+  padding-left: 28px;
+  cursor: pointer;
+  line-height: 20px;
+  display: inline-block;
+  color: #666;
+}
+.quiz [type="radio"]:checked + label:before,
+.quiz [type="radio"]:not(:checked) + label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #ddd;
+  border-radius: 100%;
+  background: #fff;
+}
+.quiz .korrekt [type="radio"] + label::before,
+.quiz .forkert [type="radio"] + label::before {
+  border: 0;
+  font-size: 1.2rem;
+  animation: 0.25s roll-in ease;
+}
+.quiz .korrekt [type="radio"] + label::after,
+.quiz .forkert [type="radio"] + label::after {
+  display: none;
+}
+.quiz .korrekt [type="radio"] + label:before {
+  content: '\f00C';
+  font-family: "FontAwesome" !important;
+  color: #09b39c;
+}
+.quiz .forkert [type="radio"] + label:before {
+  content: '\f00d';
+  font-family: "FontAwesome" !important;
+  color: #b05747;
+}
+.quiz [type="radio"]:checked + label:after,
+.quiz [type="radio"]:not(:checked) + label:after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  background: #F55711;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border-radius: 100%;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.quiz [type="radio"]:not(:checked) + label:after {
+  opacity: 0;
+  -webkit-transform: scale(0);
+  transform: scale(0);
+}
+.quiz [type="radio"]:checked + label:after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+.loader {
+  height: 20px;
+  width: 200px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -76px 0 0 -76px;
+  --c:no-repeat linear-gradient(#F55711 0 0);
+  background: var(--c),var(--c),#43BCA2;
+  background-size: 50% 100%;
+  animation: loading 4s infinite;
+}
+@keyframes loading {
+  0%   {background-position:-150% 0,-150% 0}
+  60%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}
+
+@media only screen and (max-width: 800px) {
+    #desktop-img {
+        display: none;
+    }
+}
+
+</style>
+<body>
+<section ng-app="ngQuiz" ng-controller="ngQuizController" class="quiz">
+    <image-preload></image-preload>
+    <div class="progress" ng-if="quizProgress.inProgress && quizProgress.currentQuestion <= quizProgress.lastQuestion">
+      <span ng-cloak class="counter">Question {{quizProgress.currentQuestionFriendly}} of {{quizProgress.lastQuestion}}</span>
+      <div class="progress-bar" progress-bar></div>
+    </div>
+    <div class="content">
+      <!-- start side -->
+      <section ng-cloak class="start" ng-if="!quizProgress.loading && !quizProgress.inProgress && !quizProgress.finished">
+        <div ng-cloak class="row">
+          <div class="col-xs-6">
+            <h1>{{::quizMetadata.title}}</h1>
+            <p id="desktop-img">{{::quizMetadata.start}}</p>
+          </div>
+          <div id="desktop-img" class="col-xs-6">
+            <img style="max-height: 40vh;" ng-src="{{quizMetadata.startImg}}" />
+            <aside class="figure-caption text-xs-right" ng-if="quizMetadata.startImgCredit">Fotokilde: {{::quizMetadata.startImgCredit}}</aside>
+          </div>
+        </div>
+        <div class="row">
+          <button class="pull-right btn btn-success" ng-click="startQuiz()">Start Quiz</button>
+        </div>
+      </section>
+
+      <!-- spørgsmål list -->
+      <section ng-cloak class="question" ng-if="quizProgress.inProgress && quizProgress.currentQuestion <= quizProgress.lastQuestion">
+        <div animate-progression>
+          <div class="text-center">
+            <img class="img-responsive" ng-src="{{quizQuestions[quizProgress.currentQuestion].questionImg}}" />
+          </div>
+
+          <p class="question-content">{{quizQuestions[quizProgress.currentQuestion].question}}</p>
+          <div class="question-options">
+            <div ng-repeat="option in quizQuestions[quizProgress.currentQuestion].options | orderBy: '-'">
+              <div class="option" ng-class="{'forkert': quizQuestions[quizProgress.currentQuestion].answerChecked && option.selected && !option.korrekt, 'korrekt': option.korrekt && quizQuestions[quizProgress.currentQuestion].answerChecked, 'dim': quizQuestions[quizProgress.currentQuestion].answerChecked}">
+                <input type="radio" name="option" id="{{$index}}" ng-click="answerQuestion({selected: option.name})" ng-disabled="quizQuestions[quizProgress.currentQuestion].answerChecked">
+                <label for="{{$index}}">{{option.name}}</label>
+              </div>
+              <div class="row feedback" ng-if="quizQuestions[quizProgress.currentQuestion].answerChecked && option.korrekt">
+                <span ng-bind-html="quizQuestions[quizProgress.currentQuestion].feedback"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <button ng-if="quizProgress.currentQuestion === -1" class="btn btn-primary" ng-click="startQuiz()">Start Quiz</button>
+            <button ng-if="quizQuestions[quizProgress.currentQuestion].answerChecked && quizProgress.currentQuestionFriendly !== quizProgress.lastQuestion" class="btn btn-primary pull-right" ng-click="nextQuestion()">Næste spørgsmål <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+            <button ng-if="!quizQuestions[quizProgress.currentQuestion].answerChecked" ng-disabled="!quizQuestions[quizProgress.currentQuestion].answered" class="btn btn-primary pull-right" ng-click="checkAnswer()">Check Svar</button>
+          </div>
+        </div>
+
+        <div class="get-my-resultat text-center" ng-if="quizProgress.currentQuestionFriendly === quizProgress.lastQuestion && quizQuestions[quizProgress.currentQuestion].answerChecked">
+          <button class="pulse btn btn-primary" ng-click="getScore()">Få mine resultater</button>
+        </div>
+      </section>
+
+      <section class="loading" ng-if="quizProgress.loading || quizProgress.calculatingScore">
+			<div class="loader"></div>
+      </section>
+
+      <section class="" ng-if="!quizProgress.calculatingScore && !quizProgress.inProgress && quizProgress.currentQuestionFriendly === quizProgress.lastQuestion">
+        <div class="resultat">
+          <div class="text-center">
+            <h1>Din Score</h1>
+            <h2>{{score}}</h2>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button class="start-over btn btn-success" ng-click="startOver()"><i class="fa fa-repeat" aria-hidden="true"></i>Prøv igen</button>
+        </div>
+      </section>
+  </section>
+</body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-sanitize.min.js'></script>
+<script>
+angular.module('ngQuiz', ['ngSanitize'])
+
+.controller('ngQuizController', function($scope, $timeout, quizProgress, scoreKeeper) {
+  $scope.quizProgress = quizProgress;
+
+  $scope.quizData = {
+    "quizMetadata": {
+      "title": "Quiz om Alkohol og Rusmidler",
+      "start": "En alkoholpromille angiver mængden af alkohol, en person har i blodet efter indtagelse af alkoholiske drikke",
+      "startImg": "https://www.sundhed.dk/content/cms/32/21732_promille2502x2502.jpg",
+      "startImgCredit": "Sundhed.dk"
+    },
+    "quizQuestions": [{
+      "question": "Hvad er den anbefalede aldersgrænse for alkoholforbrug ifølge Sundhedsstyrelsen?",
+      "questionImg": "https://www.bodylab.dk/images/artikler/alkohol-oedelaegger-ikke-kvinders-gains-600x255.jpg",
+      "feedback": "Sundhedsstyrelsen anbefaler, at unge under 18 år undgår alkohol, da deres hjerner stadig er under udvikling, og alkohol kan have negative konsekvenser for denne udvikling.",
+      "options": [{
+        "name": "16 år",
+        "korrekt": false
+      }, {
+        "name": "18 år",
+        "korrekt": true
+      }, {
+        "name": "21 år",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvad er en almindelig kortsigtet effekt af alkoholforbrug hos unge?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Alkohol påvirker centralnervesystemet, hvilket fører til nedsat dømmekraft, balance og koordination.",
+      "options": [{
+        "name": "Øget fokus og koncentration",
+        "korrekt": false
+      }, {
+        "name": "Forbedret humør og sociale færdigheder",
+        "korrekt": false
+      }, {
+        "name": "Nedsat dømmekraft og koordination",
+        "korrekt": true
+      }]
+    }, {
+      "question": "Hvad er en almindelig langsigtet konsekvens af regelmæssigt alkoholmisbrug?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Langvarigt alkoholmisbrug kan føre til alvorlige leverproblemer såsom skrumpelever (cirrose), hvilket er en kronisk leversygdom.",
+      "options": [{
+        "name": "Forbedret hukommelse",
+        "korrekt": false
+      }, {
+        "name": "Leverproblemer",
+        "korrekt": true
+      }, {
+        "name": "Bedre søvnkvalitet",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvilket stof er mest almindeligt misbrugt blandt unge, ifølge undersøgelser?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Alkohol er det mest almindeligt misbrugte stof blandt unge på grund af dets tilgængelighed og sociale accept.",
+      "options": [{
+        "name": "Alkohol",
+        "korrekt": true
+      }, {
+        "name": "Heroin",
+        "korrekt": false
+      }, {
+        "name": "Kokain",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvilken af følgende er en risikofaktor for at udvikle alkoholafhængighed i en ung alder?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Tidlig debut med alkohol øger risikoen for at udvikle afhængighed senere i livet, da det kan ændre hjernens udvikling og forstærke adfærdsmønstre.",
+      "options": [{
+        "name": "Tidlig alkoholdebut",
+        "korrekt": true
+      }, {
+        "name": "Regelmæssig motion",
+        "korrekt": false
+      }, {
+        "name": "God kost",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvor lang tid tager det for kroppen at nedbryde en standard enhed alkohol (fx en øl)?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Kroppen kan typisk nedbryde en standard enhed alkohol på cirka en time, men dette kan variere afhængigt af en persons vægt, køn og generelle helbred.",
+      "options": [{
+        "name": "Cirka 1 time",
+        "korrekt": true
+      }, {
+        "name": "Cirka 2 timer",
+        "korrekt": false
+      }, {
+        "name": "Cirka 3 timer",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvilken af følgende strategier anbefales for at forhindre unge i at drikke alkohol?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Åbne og ærlige samtaler om alkohol kan hjælpe unge med at forstå risiciene og træffe informerede valg.",
+      "options": [{
+        "name": "At have åbne og ærlige samtaler om alkohol",
+        "korrekt": true
+      }, {
+        "name": "At ignorere emnet",
+        "korrekt": false
+      }, {
+        "name": "At forbyde dem at forlade huset",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvilket af følgende symptomer kan indikere et problem med alkoholmisbrug hos en teenager?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Øget social isolation, sammen med ændringer i adfærd og humør, kan være et tegn på alkoholmisbrug.",
+      "options": [{
+        "name": "Bedre akademiske præstationer",
+        "korrekt": false
+      }, {
+        "name": "Øget social isolation",
+        "korrekt": true
+      }, {
+        "name": "Forbedret humør",
+        "korrekt": false
+      }]
+    }, {
+      "question": "Hvilken rolle spiller forældre i forebyggelsen af unges alkoholmisbrug?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Forældre spiller en central rolle i forebyggelsen af alkoholmisbrug gennem støtte, vejledning og åben kommunikation.",
+      "options": [{
+        "name": "Ingen rolle",
+        "korrekt": false
+      }, {
+        "name": "Kun en rolle som disciplinære myndigheder",
+        "korrekt": false
+      }, {
+        "name": "En vigtig rolle gennem støtte og vejledning",
+        "korrekt": true
+      }]
+    }, {
+      "question": "Hvilken af følgende er en mulig konsekvens af binge-drinking (drukkultur) hos unge?",
+      "questionImg": "https://lh4.googleusercontent.com/proxy/qi9EXf-Xo3kgK4r0nGy4C42hY_BihCq365KLinAFHr5Zi2Q7rq4BSOwQ2dtWLwX-VKkfrrMFGzI3SU3XUBJOEUlLWHuiHvKFJPBMkCl4pYf9ug",
+      "feedback": "Binge-drinking kan føre til alvorlige konsekvenser såsom ulykker, skader, alkoholforgiftning og andre sundhedsproblemer.",
+      "options": [{
+        "name": "Bedre akademiske præstationer",
+        "korrekt": false
+      }, {
+        "name": "Øget risiko for ulykker og skader",
+        "korrekt": true
+      }, {
+        "name": "Forbedret social status",
+        "korrekt": false
+      }]
+    }]
+  };
+
+  $scope.quizQuestions = $scope.quizData.quizQuestions;
+  $scope.quizMetadata = $scope.quizData.quizMetadata;
+  quizProgress.lastQuestion = $scope.quizQuestions.length;
+  quizProgress.loading = false;
+  //Her initialiserer vi quiz-spørgsmålene og metadataen fra quizData. 
+  //quizProgress.lastQuestion sættes til antallet af spørgsmål, og loading sættes til false, da dataene nu er indlæst.
+
+  $scope.startQuiz = function() {
+    quizProgress.inProgress = true;
+    quizProgress.currentQuestion = 0;
+    quizProgress.imageToPreload = 1;
+  };
+  //Funktionen startQuiz starter quizzen ved at sætte inProgress til true, 
+  //nulstiller currentQuestion til 0, og sætter imageToPreload til 1,
+  //hvilket betyder, at den første billede til spørgsmålet er klar til at blive indlæst.
+
+  $scope.nextQuestion = function() {
+    if (quizProgress.currentQuestion < quizProgress.lastQuestion) {
+      quizProgress.currentQuestion = quizProgress.currentQuestion + 1;
+      quizProgress.currentQuestionFriendly = quizProgress.currentQuestionFriendly + 1;
+      quizProgress.imageToPreload = quizProgress.imageToPreload + 1;
+    }
+  };
+  //Funktionen nextQuestion går til næste spørgsmål, hvis vi ikke er ved det sidste spørgsmål.
+  //Den øger både currentQuestion og currentQuestionFriendly med 1 og forbereder det næste billede til indlæsning.
+  //currentQuestionFriendly bruges som variabel til at repræsentere det aktuelle spørgsmål i en mere menneskevenlig form.
+  //Den bruges til at vise spørgsmålets nummer til brugeren, hvor nummereringen starter fra 1 i stedet for 0
+  //(som er almindeligt i programmering).
+
+  $scope.answerQuestion = function(data) {
+    $scope.quizQuestions[quizProgress.currentQuestion].answered = true;
+    angular.forEach($scope.quizQuestions[quizProgress.currentQuestion].options, function(obj) {
+      if (obj.name === data.selected) {
+        obj.selected = true;
+      } else {
+        obj.selected = false;
+      }
+    });
+  };
+  //Funktionen answerQuestion markerer det aktuelle spørgsmål som besvaret og opdaterer svarmulighederne,
+  //så kun den valgte mulighed markeres som valgt.
+
+  $scope.checkAnswer = function() {
+    $scope.quizQuestions[quizProgress.currentQuestion].answerChecked = true;
+
+    angular.forEach($scope.quizQuestions[quizProgress.currentQuestion].options, function(obj) {
+      if (obj.selected) {
+        if (obj.korrekt) {
+          $scope.quizQuestions[quizProgress.currentQuestion].answerWasRight = true;
+        } else {
+          $scope.quizQuestions[quizProgress.currentQuestion].answerWasRight = false;
+        }
+      }
+    });
+  };
+  //Funktionen checkAnswer markerer svaret som kontrolleret og tjekker, om den valgte mulighed er korrekt.
+  //Hvis den er korrekt, markeres svaret som rigtigt.
+
+  $scope.getScore = function() {
+    quizProgress.inProgress = false;
+    quizProgress.finished = true;
+    quizProgress.calculatingScore = true;
+    $scope.score = scoreKeeper.calculateScore($scope.quizQuestions);
+
+    $timeout(function() {
+      quizProgress.calculatingScore = false;
+    }, 2000);
+  };
+  //Funktionen getScore afslutter quizzen, beregner scoren ved hjælp af scoreKeeper,
+  //og venter 2,0 sekunder, før den sætter calculatingScore til false.
+  //hvorfor vi venter 2,0 sekunder, før vi sætter calculatingScore til false, er at 
+  //give brugeren en fornemmelse af, at der sker noget i baggrunden.
+  //Denne forsinkelse simulerer en beregningsproces og forbedrer brugeroplevelsen 
+  //ved at gøre applikationen mere interaktiv og engagerende.
+
+  $scope.startOver = function() {
+    angular.forEach($scope.quizQuestions, function(obj) {
+      obj.answered = false;
+      obj.answerWasRight = false;
+      obj.answerChecked = false;
+
+      angular.forEach(obj.options, function(option) {
+        option.selected = false;
+      });
+    });
+
+    quizProgress.inProgress = true;
+    quizProgress.finished = false;
+    quizProgress.currentQuestion = 0;
+    quizProgress.currentQuestionFriendly = 1;
+  };
+})
+//Funktionen startOver nulstiller quizzen ved at markere alle spørgsmål som ubesvaret og alle svarmuligheder som ikke-valgt.
+//Den starter derefter quizzen forfra ved at nulstille quiz-progressen.
+
+.factory('quizProgress', function() {
+  return {
+    currentQuestion: 0,
+    imageToPreload: 0,
+    currentQuestionFriendly: 1,
+    lastQuestion: 0,
+    loading: true,
+    inProgress: false,
+    finished: false,
+    calculatingScore: false
+  };
+})
+//quizProgress fabrikken opretter en objektmodel, der holder styr på quiz-progressen, 
+//inklusive aktuelle spørgsmål, billeder der skal indlæses, og status for quizzen
+//(om den er i gang, afsluttet osv.).
+
+.service('scoreKeeper', function() {
+  this.calculateScore = function(quizQuestions) {
+    var rightAnswers = 0;
+    angular.forEach(quizQuestions, function(obj) {
+      if (obj.answerWasRight) {
+        rightAnswers += 1;
+      }
+    });
+
+    return ((rightAnswers / quizQuestions.length) * 100).toFixed() + '%';
+  };
+})
+//scoreKeeper servicen beregner scoren for quizzen ved at tælle antallet af korrekte svar 
+//og returnere procentdelen af rigtige svar.
+
+.directive('progressBar', function(quizProgress) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      scope.$watch('quizProgress', function(newVal, oldVal) {
+        if (newVal) {
+          element.css('width', ((quizProgress.currentQuestionFriendly / quizProgress.lastQuestion) * 100 + '%'));
+        }
+      }, true);
+    }
+  };
+})
+//progressBar direktivet opdaterer bredden af progress baren baseret på quiz-progressen.
+//Den bruger $watch til at lytte efter ændringer i quizProgress og opdaterer bredden af elementet i overensstemmelse hermed.
+
+.directive('imagePreload', function(quizProgress) {
+  return {
+    restrict: 'EA',
+    template: "<img style='display:none;' ng-src='{{quizQuestions[quizProgress.imageToPreload].questionImg}}'/>"
+  };
+})
+//imagePreload direktivet forudindlæser billeder til quiz-spørgsmålene. 
+//Dette forbedrer brugeroplevelsen ved at sikre, at billederne er klar, når brugeren når frem til det næste spørgsmål.
+
+.directive('animateProgression', function(quizProgress, $timeout) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      scope.$watch('quizProgress.currentQuestion', function(newVal, oldVal) {
+        if (newVal) {
+          element.addClass('question-animate');
+          $timeout(function() {
+            element.removeClass('question-animate');
+          }, 1000);
+        }
+      });
+    }
+  };
+});
+//animateProgression direktivet tilføjer en animationseffekt, når quizzen skifter til et nyt spørgsmål.
+//Det bruger $timeout til at fjerne animationen efter 1,0 sekunder.
+</script>
