@@ -202,19 +202,23 @@
   
 }
 
-/* custom radio controls */
+/* Stiller mellemrum mellem options og tilføjer en glidende overgang */
 .quiz .option {
   margin-bottom: 0.75em;
-  transition: all 0.25s ease;
+  transition: all 0.25s ease;						/* Glidende overgangseffekt */
 }
+
+/* Skjuler de faktiske radio knapper, da vi bruger labels til at style dem i stedet */
 .quiz [type="radio"]:checked,
 .quiz [type="radio"]:not(:checked) {
-  position: absolute;
+  position: absolute;								/* Skjuler radioknapperne uden for synligt område */
   left: -9999px;
 }
+
+/* Styling for labels når radio knapperne er enten tjekket eller ikke tjekket */
 .quiz [type="radio"]:checked + label,
 .quiz [type="radio"]:not(:checked) + label {
-  position: relative;
+  position: relative;								/* Positionerer label for interaktion */
   font-weight: normal;
   padding-left: 28px;
   cursor: pointer;
@@ -222,6 +226,8 @@
   display: inline-block;
   color: #666;
 }
+
+/* Før-elementet bruges til at vise den visuelle del af radio knappen */
 .quiz [type="radio"]:checked + label:before,
 .quiz [type="radio"]:not(:checked) + label:before {
   content: '';
@@ -234,26 +240,34 @@
   border-radius: 100%;
   background: #fff;
 }
+
+/* Custom styling for korrekt og forkert svar efter tjek */
 .quiz .korrekt [type="radio"] + label::before,
 .quiz .forkert [type="radio"] + label::before {
   border: 0;
   font-size: 1.2rem;
-  animation: 0.25s roll-in ease;
+  animation: 0.25s roll-in ease;							/* Rulle-animation ved valg */
 }
 .quiz .korrekt [type="radio"] + label::after,
 .quiz .forkert [type="radio"] + label::after {
   display: none;
 }
+
+/* Korrekt svar markeres med en grøn farve og et flueben */
 .quiz .korrekt [type="radio"] + label:before {
-  content: '\f00C';
+  content: '\f00C';											/* FontAwesome ikon for korrekt svar */
   font-family: "FontAwesome" !important;
   color: #09b39c;
 }
+
+/* Forkert svar markeres med en rød farve og et kryds */
 .quiz .forkert [type="radio"] + label:before {
-  content: '\f00d';
+  content: '\f00d';											/* FontAwesome ikon for forkert svar */
   font-family: "FontAwesome" !important;
   color: #b05747;
 }
+
+/* Efter-element bruges til at vise den indre cirkel når knappen er tjekket */
 .quiz [type="radio"]:checked + label:after,
 .quiz [type="radio"]:not(:checked) + label:after {
   content: '';
@@ -265,53 +279,72 @@
   left: 4px;
   border-radius: 100%;
   -webkit-transition: all 0.3s ease;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease;								/* Glidende overgang */
 }
+/* Skjuler den indre cirkel når knappen ikke er tjekket */
 .quiz [type="radio"]:not(:checked) + label:after {
   opacity: 0;
   -webkit-transform: scale(0);
-  transform: scale(0);
+  transform: scale(0);										/* Skjuler element ved ikke-valgte */
 }
+
+/* Viser den indre cirkel når knappen er tjekket */
 .quiz [type="radio"]:checked + label:after {
   opacity: 1;
   -webkit-transform: scale(1);
-  transform: scale(1);
+  transform: scale(1);										/* Viser element ved valg */
 }
+/* Forklaring om brug af radio knapper:
+   Radio knapper bruges her for at give brugeren mulighed for at vælge et enkelt svar ud af flere muligheder.
+   Ved at bruge radio knapper sikres det, at kun ét svar kan vælges ad gangen, hvilket er essentielt for quizzen.
+   Radio knapperne er skjulte ved hjælp af CSS, og i stedet bruges labels til at vise brugerens valg.
+   Dette giver mulighed for mere fleksibel og avanceret styling af valgmulighederne.
+*/
 
+
+/* Loader styling */
 .loader {
-  height: 20px;
-  width: 200px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin: -76px 0 0 -76px;
-  --c:no-repeat linear-gradient(#F55711 0 0);
-  background: var(--c),var(--c),#43BCA2;
-  background-size: 50% 100%;
-  animation: loading 4s infinite;
+  height: 20px;										/* Højde på loaderen */
+  width: 200px;										/* Bredde på loaderen */
+  position: absolute;								/* Absolut positionering */
+  left: 50%;										/* Placerer loaderen i midten af vinduet horisontalt */
+  top: 50%;											/* Placerer loaderen i midten af vinduet vertikalt */
+  margin: -76px 0 0 -76px;							/* Justerer placeringen for præcis centering */
+  --c:no-repeat linear-gradient(#F55711 0 0);		/* Opretter en CSS-variabel til gradientbaggrund */
+  background: var(--c),var(--c),#43BCA2;			/* Anvender variablen og en fast farve som baggrund */
+  background-size: 50% 100%;						/* Indstiller størrelsen på baggrundsgradienterne */
+  animation: loading 4s infinite;					/* Anvender loading animationen */
 }
+/* Keyframes for loading animationen */
 @keyframes loading {
-  0%   {background-position:-150% 0,-150% 0}
-  60%  {background-position: 250% 0,-150% 0}
-  100% {background-position: 250% 0, 250% 0}
+  0%   {background-position:-150% 0,-150% 0}		/* Startposition for animationen */
+  60%  {background-position: 250% 0,-150% 0}		/* Midtpunkt i animationen */
+  100% {background-position: 250% 0, 250% 0}		/* Slutposition for animationen */
 }
 
+/* Medieforespørgsel til skærme mindre end 800px bred */
 @media only screen and (max-width: 800px) {
     #desktop-img {
-        display: none;
+        display: none;								/* Skjuler billedet på mindre skærme, har valgt også at bruge det til skjule noget tekst*/
     }
 }
 
 </style>
 <body>
+<!-- AngularJS applikation og controller for quiz -->
 <section ng-app="ngQuiz" ng-controller="ngQuizController" class="quiz">
+	<!-- Preload billeder til quizzen -->
     <image-preload></image-preload>
+	
+	<!-- Progress bar, vises kun når quizzen er i gang -->
     <div class="progress" ng-if="quizProgress.inProgress && quizProgress.currentQuestion <= quizProgress.lastQuestion">
       <span ng-cloak class="counter">Question {{quizProgress.currentQuestionFriendly}} of {{quizProgress.lastQuestion}}</span>
       <div class="progress-bar" progress-bar></div>
     </div>
+	
+	
     <div class="content">
-      <!-- start side -->
+      <!-- Startside, vises før quizzen starter -->
       <section ng-cloak class="start" ng-if="!quizProgress.loading && !quizProgress.inProgress && !quizProgress.finished">
         <div ng-cloak class="row">
           <div class="col-xs-6">
@@ -328,7 +361,7 @@
         </div>
       </section>
 
-      <!-- spørgsmål list -->
+      <!-- Spørgsmålssektion, vises når quizzen er i gang -->
       <section ng-cloak class="question" ng-if="quizProgress.inProgress && quizProgress.currentQuestion <= quizProgress.lastQuestion">
         <div animate-progression>
           <div class="text-center">
@@ -338,6 +371,7 @@
           <p class="question-content">{{quizQuestions[quizProgress.currentQuestion].question}}</p>
           <div class="question-options">
             <div ng-repeat="option in quizQuestions[quizProgress.currentQuestion].options | orderBy: '-'">
+			 <!-- Valgmuligheder, bruger radioknapper -->
               <div class="option" ng-class="{'forkert': quizQuestions[quizProgress.currentQuestion].answerChecked && option.selected && !option.korrekt, 'korrekt': option.korrekt && quizQuestions[quizProgress.currentQuestion].answerChecked, 'dim': quizQuestions[quizProgress.currentQuestion].answerChecked}">
                 <input type="radio" name="option" id="{{$index}}" ng-click="answerQuestion({selected: option.name})" ng-disabled="quizQuestions[quizProgress.currentQuestion].answerChecked">
                 <label for="{{$index}}">{{option.name}}</label>
@@ -359,11 +393,13 @@
           <button class="pulse btn btn-primary" ng-click="getScore()">Få mine resultater</button>
         </div>
       </section>
-
+	
+		<!-- Indlæsningsanimation, vises når quizzen loader eller beregner resultater -->
       <section class="loading" ng-if="quizProgress.loading || quizProgress.calculatingScore">
 			<div class="loader"></div>
       </section>
 
+		<!-- Resultatsektion, vises når quizzen er afsluttet -->
       <section class="" ng-if="!quizProgress.calculatingScore && !quizProgress.inProgress && quizProgress.currentQuestionFriendly === quizProgress.lastQuestion">
         <div class="resultat">
           <div class="text-center">
